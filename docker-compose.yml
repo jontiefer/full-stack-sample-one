@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    env_file:
+      - sampleappdb.env
+    environment:
+      POSTGRES_DB: sampleappdb    
+    ports:
+      - "8432:5432"
+    volumes:
+      - sampleapp_data:/var/lib/postgresql/data
+      - ./sampleappdb-init.sql:/docker-entrypoint-initdb.d/sampleappdb-init.sql
+  sampleappui:
+    build:
+      context: ./developer-ui
+      dockerfile: Dockerfile
+    ports:
+      - "8173:80"    
+    image: sampleappui
+  sampleappapi:
+    env_file:
+      - sampleappapi.env
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8133:80"    
+    image: sampleappapi
+
+volumes:
+  sampleapp_data:
+

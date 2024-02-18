@@ -1,0 +1,16 @@
+.loginAttemptsHeader {
+  margin-bottom: 10px;
+  font-family:'Times New Roman', Times, serif;  
+}
+
+.loginAttemptsList {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+.loginAttemptsItem {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.0em;
+  font-style: italic;
+}

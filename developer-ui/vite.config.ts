@@ -3,9 +3,12 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 //import plugin from '@vitejs/plugin-react';
 import react from '@vitejs/plugin-react';
+
+/*** ADD TO ENABLE SSL
 import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
+
 
 // const baseFolder =
 //     process.env.APPDATA !== undefined && process.env.APPDATA !== ''
@@ -14,8 +17,8 @@ import child_process from 'child_process';
 
 const baseFolder = __dirname
 
-//const certificateArg = process.argv.map(arg => arg.match(/--name=(?<value>.+)/i)).filter(Boolean)[0];
-//const certificateName = certificateArg ? certificateArg.groups.value : "Developer-UI";
+const certificateArg = process.argv.map(arg => arg.match(/--name=(?<value>.+)/i)).filter(Boolean)[0];
+const certificateName = certificateArg ? certificateArg.groups.value : "Developer-UI";
 
 const certificateName = 'developer-ui+3'
 
@@ -40,6 +43,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
         throw new Error("Could not create certificate.");
     }
 }
+***/
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -69,9 +73,10 @@ export default defineConfig({
         host: true,
         port: 8173,
         strictPort: true,
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
-        }
+        // Enable to Use SSL
+        // https: {
+        //     key: fs.readFileSync(keyFilePath),
+        //     cert: fs.readFileSync(certFilePath),
+        // }
     }
 })

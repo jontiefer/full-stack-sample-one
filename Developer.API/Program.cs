@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Configure Database and Entity Framework
+builder.Configuration.AddEnvironmentVariables();
+
 var connectionString = builder.Configuration.GetConnectionString("SampleAppDbConnection");
 
 builder.Services.AddDbContext<SampleAppDbContext>(options =>
@@ -139,14 +141,27 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
 app.UseCors("AllowCORS");
 
 using (var scope = app.Services.CreateScope())
 {
-    await IdentityGenerator.SeedRolesAsync(scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>());
-}
+    try
+    {
+        var sampleAppDbContext = scope.ServiceProvider.GetRequiredService<SampleAppDbContext>();
+        sampleAppDbContext.Database.Migrate();
 
-await IdentityGenerator.SeedAdminUserAsync(app.Services, builder.Configuration);
+        await IdentityGenerator.SeedRolesAsync(scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>());
+
+        await IdentityGenerator.SeedAdminUserAsync(app.Services, builder.Configuration);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred during database initialization.");
+        throw;
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -11,7 +11,7 @@ services:
       - "8432:5432"
     volumes:
       - sampleapp_data:/var/lib/postgresql/data
-      - ./sampleappdb-init.sql:/docker-entrypoint-initdb.d/sampleappdb-init.sql
+      - ./sampleappdb-init.sql:/docker-entrypoint-initdb.d/sampleappdb-init.sql    
   sampleappui:
     build:
       context: ./developer-ui
@@ -20,6 +20,8 @@ services:
       - "8173:80"    
     image: sampleappui
   sampleappapi:
+    depends_on:
+      - postgres        
     env_file:
       - sampleappapi.env
     build:
@@ -27,6 +29,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8133:80"    
+    entrypoint: ["sh", "-c", "sleep 5 && dotnet Developer.API.dll"]
     image: sampleappapi
 
 volumes:
